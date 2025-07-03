@@ -107,10 +107,8 @@ class TestTheCatAPIClient:
     def test_get_breeds_failure(self, mock_get):
         """Test API failure handling"""
         mock_get.side_effect = Exception("API Error")
-        
         client = TheCatAPIClient()
         breeds = client.get_breeds()
-        
         assert breeds == []
 
     @patch('purrfect_match.requests.get')

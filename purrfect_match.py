@@ -203,7 +203,31 @@ class PetfinderAPIClient:
             cats = []
             data = response.json()
             
+            # Dictionary to track cats we've already processed
+            seen_cats = {}
+            
             for animal in data.get('animals', []):
+                cat_id = str(animal.get('id', ''))
+                
+                # Skip if we've already processed this cat
+                if cat_id in seen_cats:
+                    # If this record has more complete information, update the existing one
+                    existing_cat = seen_cats[cat_id]
+                    
+                    # Check if current record has photos and existing doesn't
+                    current_photos = [photo['large'] for photo in animal.get('photos', []) if 'large' in photo]
+                    if current_photos and not existing_cat.photos:
+                        existing_cat.photos = current_photos
+                    
+                    # Check if current record has contact info and existing doesn't
+                    contact = animal.get('contact', {})
+                    if contact.get('email') and not existing_cat.contact_email:
+                        existing_cat.contact_email = contact.get('email', '')
+                    if contact.get('phone') and not existing_cat.contact_phone:
+                        existing_cat.contact_phone = contact.get('phone', '')
+                    
+                    continue
+                
                 # Extract photos
                 photos = [photo['large'] for photo in animal.get('photos', []) if 'large' in photo]
                 
@@ -219,7 +243,7 @@ class PetfinderAPIClient:
                 contact = animal.get('contact', {})
                 
                 cat = CatProfile(
-                    petfinder_id=str(animal.get('id', '')),
+                    petfinder_id=cat_id,
                     name=animal.get('name', 'Unknown'),
                     age=animal.get('age', 'Unknown'),
                     breeds=breeds,
@@ -235,14 +259,18 @@ class PetfinderAPIClient:
                 
                 # Derive personality traits from description and breeds
                 self._enhance_cat_profile(cat)
+                
+                # Store in our tracking dictionary and add to results
+                seen_cats[cat_id] = cat
                 cats.append(cat)
             
-            print(f"Found {len(cats)} adoptable cats near {location}")
+            print(f"Found {len(cats)} unique adoptable cats near {location}")
             return cats
             
         except requests.RequestException as e:
             print(f"ERROR: Error searching Petfinder: {e}")
             return []
+
     
     def _enhance_cat_profile(self, cat: CatProfile):
         """Enhance cat profile with derived personality traits"""
