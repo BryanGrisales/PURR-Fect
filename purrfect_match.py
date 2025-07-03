@@ -542,10 +542,89 @@ class PurrfectMatchApp:
         if cat_api_key:
             self.cat_api = TheCatAPIClient(cat_api_key)
     
+    def show_main_menu(self):
+        """Show main menu and handle user choice"""
+        print("\nWelcome to PurrfectMatch!")
+        print("=" * 40)
+        print("1. View Past Matches")
+        print("2. Take Compatibility Quiz")
+        print("3. Exit")
+        
+        while True:
+            try:
+                choice = int(input("\nSelect an option (1-3): "))
+                if choice == 1:
+                    self.view_past_matches()
+                    return None
+                elif choice == 2:
+                    return self.take_quiz()
+                elif choice == 3:
+                    print("\nGoodbye!")
+                    return None
+                else:
+                    print("Please enter 1, 2, or 3")
+            except ValueError:
+                print("Please enter a valid number")
+            except KeyboardInterrupt:
+                print("\n\nGoodbye!")
+                return None
+    
+    def view_past_matches(self):
+        """View past matches from database"""
+        print("\n" + "=" * 60)
+        print("YOUR PAST MATCHES")
+        print("=" * 60)
+        
+        # Get all matches from database
+        import sqlite3
+        try:
+            with sqlite3.connect(self.db.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute('''
+                    SELECT u.user_id, u.zip_code, u.home_type, u.experience, u.created_at,
+                           m.cat_name, m.total_score, m.created_at as match_date
+                    FROM users u 
+                    JOIN matches m ON u.user_id = m.user_id 
+                    ORDER BY m.created_at DESC
+                ''')
+                matches = cursor.fetchall()
+                
+                if not matches:
+                    print("No past matches found. Take the quiz to get your first matches!")
+                    return
+                
+                current_user = None
+                for match in matches:
+                    user_id, zip_code, home_type, experience, user_created, cat_name, score, match_date = match
+                    
+                    # Print user header when we encounter a new user
+                    if user_id != current_user:
+                        current_user = user_id
+                        print(f"\nUser Profile: {home_type.title()} dweller in {zip_code}")
+                        print(f"Experience: {experience.replace('_', ' ').title()}")
+                        print(f"Profile created: {user_created}")
+                        print("-" * 40)
+                    
+                    # Print match
+                    rating = "EXCELLENT" if score >= 80 else "GOOD" if score >= 60 else "FAIR"
+                    print(f"  {cat_name} - {score}% Compatible ({rating}) - {match_date}")
+                
+                print(f"\nTotal matches found: {len(matches)}")
+                
+        except Exception as e:
+            print(f"Error retrieving matches: {e}")
+        
+        # Ask if they want to take a new quiz
+        print("\nWould you like to take a new compatibility quiz? (y/n)")
+        choice = input("> ").lower()
+        if choice.startswith('y'):
+            user = self.take_quiz()
+            if user:
+                self.process_new_user(user)
+    
     def take_quiz(self) -> UserProfile:
         """Take the compatibility quiz"""
-        print("\nWelcome to PurrfectMatch!")
-        print("Let's find your perfect cat companion!")
+        print("\nLet's find your perfect cat companion!")
         print("-" * 50)
         
         # Home type
@@ -657,29 +736,57 @@ class PurrfectMatchApp:
             for reason in score.reasons:
                 print(f"      • {reason}")
     
+    def process_new_user(self, user: UserProfile):
+        """Process a new user quiz and find matches"""
+        # Save user
+        user_id = self.db.save_user(user)
+        print(f"\nProfile saved! ID: {user_id}")
+        
+        # Find and display matches
+        matches = self.find_matches(user)
+        
+        if matches:
+            self.display_matches(matches)
+            
+            # Save top matches
+            for cat, score, _ in matches[:5]:
+                self.db.save_match(user_id, cat, score)
+            
+            print(f"\nSaved {min(5, len(matches))} matches to database!")
+        
+        print("\nThanks for using PurrfectMatch!")
+    
     def run(self):
         """Run the main application"""
         try:
-            # Take quiz
-            user = self.take_quiz()
-            
-            # Save user
-            user_id = self.db.save_user(user)
-            print(f"\nProfile saved! ID: {user_id}")
-            
-            # Find and display matches
-            matches = self.find_matches(user)
-            
-            if matches:
-                self.display_matches(matches)
+            while True:
+                # Show main menu
+                user = self.show_main_menu()
                 
-                # Save top matches
-                for cat, score, _ in matches[:5]:
-                    self.db.save_match(user_id, cat, score)
+                if user is None:
+                    break  # User chose to exit or view past matches
                 
-                print(f"\nSaved {min(5, len(matches))} matches to database!")
-            
-            print("\nThanks for using PurrfectMatch!")
+                # Process new user quiz
+                self.process_new_user(user)
+                
+                # Ask if they want to continue
+                print("\nWould you like to:")
+                print("1. Take another quiz")
+                print("2. View past matches") 
+                print("3. Exit")
+                
+                try:
+                    choice = int(input("\nSelect an option (1-3): "))
+                    if choice == 3:
+                        print("\nThanks for using PurrfectMatch!")
+                        break
+                    elif choice == 2:
+                        self.view_past_matches()
+                        break
+                    # If choice == 1, continue the loop for another quiz
+                except (ValueError, KeyboardInterrupt):
+                    print("\nThanks for using PurrfectMatch!")
+                    break
             
         except KeyboardInterrupt:
             print("\n\nGoodbye!")
