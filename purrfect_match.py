@@ -596,8 +596,6 @@ class PurrfectMatchApp:
                 current_user = None
                 for match in matches:
                     user_id, zip_code, home_type, experience, user_created, cat_name, score, match_date = match
-                    
-                    # Print user header when we encounter a new user
                     if user_id != current_user:
                         current_user = user_id
                         print(f"\nUser Profile: {home_type.title()} dweller in {zip_code}")
@@ -605,7 +603,6 @@ class PurrfectMatchApp:
                         print(f"Profile created: {user_created}")
                         print("-" * 40)
                     
-                    # Print match
                     rating = "EXCELLENT" if score >= 80 else "GOOD" if score >= 60 else "FAIR"
                     print(f"  {cat_name} - {score}% Compatible ({rating}) - {match_date}")
                 
@@ -613,8 +610,7 @@ class PurrfectMatchApp:
                 
         except Exception as e:
             print(f"Error retrieving matches: {e}")
-        
-        # Ask if they want to take a new quiz
+
         print("\nWould you like to take a new compatibility quiz? (y/n)")
         choice = input("> ").lower()
         if choice.startswith('y'):
