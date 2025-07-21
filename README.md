@@ -1,61 +1,36 @@
-# PurrfectMatch - Cat Adoption Matching System
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-A CLI application that uses real APIs to match users with adoptable cats based on lifestyle compatibility.
+## Getting Started
 
-## Problem & Solution
+First, run the development server:
 
-**Problem**: 3.2 million cats enter U.S. shelters annually, 530,000 are euthanized. Many failed adoptions occur due to poor lifestyle/personality matching.
-
-**Solution**: PurrfectMatch uses real shelter data and breed information to create compatibility scores based on lifestyle factors, not just appearance.
-
-## API Integrations
-
-- **TheCatAPI** - Gets breed characteristics, temperament, energy levels
-- **Petfinder API** - Pulls real adoptable cats from local shelters
-
-## Setup
-
-### Install Dependencies
 ```bash
-pip install requests pytest
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
 ```
 
-### Get API Keys
-- Petfinder: Register at https://www.petfinder.com/developers/
-- TheCatAPI: Get key at https://thecatapi.com/ (optional)
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### Configure API Keys
-Edit `purrfect_match.py` and add your keys:
-```python
-app.set_api_keys(
-    petfinder_key="YOUR_PETFINDER_API_KEY",
-    petfinder_secret="YOUR_PETFINDER_SECRET"
-)
-```
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-### Run Application
-```bash
-python purrfect_match.py
-```
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-### Run Tests
-```bash
-python -m pytest test_purrfect_match.py -v
-```
+## Learn More
 
-## How It Works
+To learn more about Next.js, take a look at the following resources:
 
-1. User takes quiz about living situation, work schedule, experience, preferences
-2. Fetches adoptable cats near user's ZIP code from Petfinder
-3. Gets breed characteristics from TheCatAPI
-4. Calculates compatibility scores:
-   - Lifestyle score (40 points): Home type, work schedule, activity match
-   - Experience score (30 points): User experience vs cat temperament  
-   - Personality score (30 points): Trait matching + allergy considerations
-5. Returns ranked list with explanations and shelter contact info
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-## Files
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-- `purrfect_match.py` - Main application
-- `test_purrfect_match.py` - Unit tests
-- `requirements.txt` - Dependencies 
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

@@ -1,92 +1,44 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Next.js
+/.next/
+/out/
+.next
+
+# Production
+/build
+
 # Environment variables (IMPORTANT: Contains API keys)
 .env
 .env.local
-.env.production
+.env.*.local
 
-# Database files
-*.db
-*.sqlite
-*.sqlite3
-purrfect_match.db
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Python cache
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
+# Vercel
+.vercel
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-pip-wheel-metadata/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
 
-# PyInstaller
-*.manifest
-*.spec
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-
-# Virtual environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# Cache
+.eslintcache
 
 # macOS
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
 
-# Windows
-*.exe
-*.msi
-*.msm
-*.msp
+# Python stuff (from original project)
+*.pyc
+__pycache__/
+*.db
+.pytest_cache/
 
-# Logs
-*.log
-
-# Temporary files
-*.tmp
-*.temp 
+# Misc
+*.pem 
