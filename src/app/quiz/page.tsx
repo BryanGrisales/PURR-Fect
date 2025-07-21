@@ -189,7 +189,7 @@ export default function QuizPage() {
               <Star className="text-yellow-500 w-6 h-6" />
               <h2 className="text-xl font-semibold">Experience</h2>
             </div>
-            <p className="text-gray-600 mb-4">What's your experience with cats?</p>
+            <p className="text-gray-600 mb-4">What&apos;s your experience with cats?</p>
             
             <div className="space-y-3">
               <label className="flex items-center space-x-3 cursor-pointer">

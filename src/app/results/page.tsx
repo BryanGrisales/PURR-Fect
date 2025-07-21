@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation'
 import { UserProfile, Match } from '@/types'
 import { Heart, ArrowLeft, AlertCircle, Phone, Mail, MapPin, Star, Info } from 'lucide-react'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Suspense } from 'react'
 import Image from 'next/image'
 
 interface CatMatchCardProps {
@@ -178,7 +178,7 @@ function CatMatchCard({ match, rank }: CatMatchCardProps) {
   )
 }
 
-export default function ResultsPage() {
+function ResultsPageContent() {
   const searchParams = useSearchParams()
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
   const [matches, setMatches] = useState<Match[]>([])
@@ -194,7 +194,7 @@ export default function ResultsPage() {
         setUserProfile(profile)
         // Try to call the API to get matches
         fetchMatches(profile)
-      } catch (err) {
+      } catch {
         setError('Invalid data received')
         setIsLoading(false)
       }
@@ -224,7 +224,7 @@ export default function ResultsPage() {
           setSuccessMessage(data.message)
         }
       }
-    } catch (err) {
+    } catch {
       setError('Failed to connect to matching service')
     } finally {
       setIsLoading(false)
@@ -380,5 +380,20 @@ export default function ResultsPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ResultsPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <Heart className="w-16 h-16 text-pink-500 mx-auto mb-4 animate-pulse" />
+          <p className="text-xl text-gray-600">Loading your results...</p>
+        </div>
+      </div>
+    }>
+      <ResultsPageContent />
+    </Suspense>
   )
 } 

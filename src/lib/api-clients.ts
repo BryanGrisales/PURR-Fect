@@ -16,7 +16,16 @@ export class TheCatAPIClient {
       
       console.log(`Retrieved ${response.data.length} cat breeds from TheCatAPI`)
       
-      return response.data.map((breed: any) => ({
+      return response.data.map((breed: {
+        name?: string;
+        temperament?: string;
+        origin?: string;
+        description?: string;
+        life_span?: string;
+        hypoallergenic?: number;
+        energy_level?: number;
+        affection_level?: number;
+      }) => ({
         name: breed.name || 'Unknown',
         temperament: breed.temperament ? breed.temperament.split(', ') : [],
         origin: breed.origin || 'Unknown',
@@ -68,7 +77,7 @@ export class PetfinderAPIClient {
       this.tokenExpires = Date.now() + (tokenData.expires_in - 60) * 1000 // Refresh 1 min early
 
       console.log('Successfully obtained Petfinder access token')
-      return this.accessToken
+      return this.accessToken || null
     } catch (error) {
       console.error('Error getting Petfinder access token:', error)
       return null
@@ -117,7 +126,7 @@ export class PetfinderAPIClient {
           const existingCat = seenCats.get(catId)!
           
           // Update with more complete information if available
-          const currentPhotos = animal.photos?.map((photo: any) => photo.large).filter(Boolean) || []
+          const currentPhotos = animal.photos?.map((photo: { large?: string }) => photo.large).filter(Boolean) || []
           if (currentPhotos.length > 0 && existingCat.photos.length === 0) {
             existingCat.photos = currentPhotos
           }
@@ -138,7 +147,7 @@ export class PetfinderAPIClient {
         if (animal.breeds?.secondary) breeds.push(animal.breeds.secondary)
 
         // Extract photos
-        const photos = animal.photos?.map((photo: any) => photo.large).filter(Boolean) || []
+        const photos = animal.photos?.map((photo: { large?: string }) => photo.large).filter(Boolean) || []
 
         // Extract contact info
         const contact = animal.contact || {}

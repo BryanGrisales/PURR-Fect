@@ -45,6 +45,17 @@ export interface CatProfile {
   temperament: 'easy' | 'moderate' | 'challenging'
 }
 
+export interface BreedInfo {
+  name: string
+  temperament: string[]
+  origin: string
+  description: string
+  lifeSpan: string
+  hypoallergenic: number // 0 or 1
+  energyLevel: number // 1-5 scale from API
+  affectionLevel: number // 1-5 scale from API
+}
+
 export interface CompatibilityScore {
   catId: string
   totalScore: number // 0-100
@@ -57,5 +68,5 @@ export interface CompatibilityScore {
 export interface Match {
   cat: CatProfile
   score: CompatibilityScore
-  breedInfo?: any
+  breedInfo?: BreedInfo | null
 } 
