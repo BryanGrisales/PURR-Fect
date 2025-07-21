@@ -36,7 +36,7 @@ export default function MatchesPage() {
           </h1>
           
           <h2 className="text-2xl text-gray-600 mb-8">
-            Coming Soon! 🚀
+            Coming Soon!
           </h2>
 
           {/* Description */}
