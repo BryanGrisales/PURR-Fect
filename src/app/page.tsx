@@ -83,7 +83,7 @@ export default function Home() {
             <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl font-bold text-green-600">2</span>
             </div>
-            <h3 className="text-lg font-semibold mb-2">AI Analysis</h3>
+            <h3 className="text-lg font-semibold mb-2">Analysis</h3>
             <p className="text-gray-600">Our algorithm analyzes real adoptable cats from local shelters</p>
           </div>
 
